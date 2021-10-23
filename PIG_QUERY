@@ -1,0 +1,20 @@
+Res1 = LOAD '/datacsv/QueryResults.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
+Res2 = LOAD '/datacsv/QueryResults2.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
+Res3 = LOAD '/datacsv/QueryResults3.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
+Res4 = LOAD '/datacsv/QueryResults4.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
+Res5 = LOAD '/datacsv/QueryResults5.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
+
+
+I = FOREACH A GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
+J = FOREACH B GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
+K = FOREACH C GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
+L = FOREACH D GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
+M = FOREACH E GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
+
+•	R = UNION I,J,K,L,M;
+
+•	STORE R INTO '/stackex/output_final.txt' USING PigStorage('\t');
+
+Merge final output files in HDFS.
+
+•	hadoop fs -getmerge /stackex/final_result/part-m-00000 /stackex/final_result/part-m-00001/stackex/final_result/part-m-00002 /stackex/final_result/part-m-00003/stackex/final_result/part-m-00004 /home/srijith_unni2/result_final.txt
