@@ -1,0 +1,15 @@
+Calculate TF-IDF with Hive
+STEPS:
+1.add jar /home/teena_sharma5/hivemall-with-dependencies.jar;
+2.source /home/teena_sharma5/define-all.hive;
+3.create temporary macro tfidf(tf FLOAT, df_t INT, n_docs INT) tf * (log(10, CAST(n_docs as FLOAT)/max2(1,df_t)) + 1.0);
+4.CREATE TABLE IF NOT EXISTS tfcal(Term STRING,OwnerUserId INT , tfidf DOUBLE) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+5.LOAD DATA LOCAL INPATH '/home/teena_sharma5/newnew.csv' OVERWRITE INTO TABLE tfcal;
+6.create table tfical as select owneruserid , title , score from poststack3 order by score desc limit 10;
+7.view explodedCal as select ownerUserId, word from tfical  LATERAL VIEW explode(tokenize(Title, True)) t as word where not is_stopword(word);
+8.create view termfreqcal as select ownerUserid, word, freq from (select ownerUserId, tf(word) as word2freq from explodedCal group by ownerUserId) t LATERAL VIEW explode(word2freq) t2 as word, freq;
+9.create or replace view documentfrequencycal as select word, count(distinct ownerUserId) docs from explodedCal group by word;
+10.set hivevar:n_docs=10;
+11.create or replace view tfidf as select tf.ownerUserId, tf.word, tfidf(tf.freq, df.docs, ${n_docs}) as tfidf from termfreqcal tf JOIN documentfrequencycal df ON (tf.word = df.word) order by tfidf desc;
+12.select * from tfidf;
+
