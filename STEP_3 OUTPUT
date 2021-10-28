@@ -1,0 +1,80 @@
+hive> SELECT id, title, score FROM poststack3 ORDER BY score DESC LIMIT 10;
+Query ID = teena_sharma5_20211028115914_c46e2fc8-de43-476d-a961-153b1c29d9e3
+Total jobs = 1
+Launching Job 1 out of 1
+Status: Running (Executing on YARN cluster with App id application_1635418815625_0007)
+
+----------------------------------------------------------------------------------------------
+        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+----------------------------------------------------------------------------------------------
+Map 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+----------------------------------------------------------------------------------------------
+VERTICES: 02/02  [==========================>>] 100%  ELAPSED TIME: 8.18 s     
+----------------------------------------------------------------------------------------------
+OK
+id      title   score
+11227809        Why is processing a sorted array faster than processing an unsorted array?      25893
+2003505 How do I delete a Git branch locally and remotely?      18451
+292357  What is the difference between 'git pull' and 'git fetch'?      12796
+231767  "What does the ""yield"" keyword do?"   11512
+477816  What is the correct JSON content type?  10894
+348170  How do I undo 'git add' before commit?  10045
+5767325 How can I remove a specific item from an array? 9877
+6591213 How do I rename a local Git branch?     9747
+1642028 "What is the ""-->"" operator in C/C++?"        9539
+79923   What and where are the stack and heap?  8708
+Time taken: 8.799 seconds, Fetched: 10 row(s)
+
+
+
+
+ive> SELECT OwnerUserId, SUM(Score) AS TotalScore FROM poststack3 GROUP BY OwnerUserId ORDER BY TotalScore DESC LIMIT 10;
+Query ID = teena_sharma5_20211028120125_426d35fa-2070-4432-b962-fc62809a87ed
+Total jobs = 1
+Launching Job 1 out of 1
+Status: Running (Executing on YARN cluster with App id application_1635418815625_0007)
+
+----------------------------------------------------------------------------------------------
+        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+----------------------------------------------------------------------------------------------
+Map 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+----------------------------------------------------------------------------------------------
+VERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 8.78 s     
+----------------------------------------------------------------------------------------------
+OK
+owneruserid     totalscore
+87234   37606
+4883    28739
+9951    26728
+6068    25860
+51816   23632
+49153   20156
+179736  19454
+95592   19413
+63051   19295
+39677   17869
+Time taken: 9.68 seconds, Fetched: 10 row(s)
+
+
+hive> SELECT COUNT(DISTINCT OwnerUserId) FROM poststack3 WHERE (body LIKE '%cloud%' OR title LIKE '%cloud%' OR tags LIKE '%cloud%');
+Query ID = teena_sharma5_20211028120215_a0d5f5e4-5204-458f-8d59-fe7432703565
+Total jobs = 1
+Launching Job 1 out of 1
+Status: Running (Executing on YARN cluster with App id application_1635418815625_0007)
+
+----------------------------------------------------------------------------------------------
+        VERTICES      MODE        STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED  
+----------------------------------------------------------------------------------------------
+Map 1 .......... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 2 ...... container     SUCCEEDED      1          1        0        0       0       0  
+Reducer 3 ...... container     SUCCEEDED      1          1        0        0       0       0  
+----------------------------------------------------------------------------------------------
+VERTICES: 03/03  [==========================>>] 100%  ELAPSED TIME: 8.45 s     
+----------------------------------------------------------------------------------------------
+OK
+_c0
+799
+Time taken: 9.262 seconds, Fetched: 1 row(s)
