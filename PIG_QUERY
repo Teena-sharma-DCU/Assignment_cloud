@@ -1,20 +1,19 @@
-Res1 = LOAD '/datacsv/QueryResults.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
-Res2 = LOAD '/datacsv/QueryResults2.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
-Res3 = LOAD '/datacsv/QueryResults3.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
-Res4 = LOAD '/datacsv/QueryResults4.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
-Res5 = LOAD '/datacsv/QueryResults5.csv' USING PigStorage('\t') AS(Id:chararray, Score:chararray, ViewCount:chararray, OwnerUserId:chararray, OwnerDisplayName:chararray, Title:chararray, Tags:chararray);
+R1 = LOAD '/stackdatacsv/QueryResults1.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE','UNIX', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:chararray,DeletionDate:chararray, Score:int, ViewCount:int, Body:chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:chararray, LastActivityDate:chararray, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:chararray, CommunityOwnedDate:chararray, ContentLicense:chararray);
+
+R2 = LOAD '/stackdatacsv/QueryResults2.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE','UNIX', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:chararray,DeletionDate:chararray, Score:int, ViewCount:int, Body:chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:chararray, LastActivityDate:chararray, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:chararray, CommunityOwnedDate:chararray, ContentLicense:chararray);
+
+R3 = LOAD '/stackdatacsv/QueryResults3.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE','UNIX', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:chararray,DeletionDate:chararray, Score:int, ViewCount:int, Body:chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:chararray, LastActivityDate:chararray, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:chararray, CommunityOwnedDate:chararray, ContentLicense:chararray);
+R4 = LOAD '/stackdatacsv/QueryResults4.csv' USING org.apache.pig.piggybank.storage.CSVExcelStorage(',', 'YES_MULTILINE','UNIX', 'SKIP_INPUT_HEADER') AS (Id:int, PostTypeId:int, AcceptedAnswerId:int, ParentId:int, CreationDate:chararray,DeletionDate:chararray, Score:int, ViewCount:int, Body:chararray, OwnerUserId:int, OwnerDisplayName:chararray, LastEditorUserId:int, LastEditorDisplayName:chararray, LastEditDate:chararray, LastActivityDate:chararray, Title:chararray, Tags:chararray, AnswerCount:int, CommentCount:int, FavoriteCount:int, ClosedDate:chararray, CommunityOwnedDate:chararray, ContentLicense:chararray);
 
 
-I = FOREACH A GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
-J = FOREACH B GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
-K = FOREACH C GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
-L = FOREACH D GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
-M = FOREACH E GENERATE $0,$2,$4,$6,$7,$8,$10,$12,$13,$14,$15,$16,$17,$18;
+Concatenating all files: 
+finalR = UNION R1 , R2 , R3 , R4;
 
-•	R = UNION I,J,K,L,M;
+Deleting entries with null values: 
+filterRecords = FILTER finalR BY NOT (Id IS NULL OR OwnerUserId IS NULL);
 
-•	STORE R INTO '/stackex/output_final.txt' USING PigStorage('\t');
+Cleaning Unwanted expressions: 
+solve = FOREACH filterRecords  GENERATE (Title, REPLACE(REPLACE(Body,',',''), '\n',''), Tags, Score, Id, ViewCount, OwnerUserId, OwnerDisplayName);
 
-Merge final output files in HDFS.
-
-•	hadoop fs -getmerge /stackex/final_result/part-m-00000 /stackex/final_result/part-m-00001/stackex/final_result/part-m-00002 /stackex/final_result/part-m-00003/stackex/final_result/part-m-00004 /home/srijith_unni2/result_final.txt
+Storing the result into pig: 
+STORE solve INTO '/stackdatacsv/finalR.csv ' USING PigStorage(',');
