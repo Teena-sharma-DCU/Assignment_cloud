@@ -1,0 +1,27 @@
+SELECT *
+FROM Posts
+WHERE Posts.ViewCount > 95000  
+ORDER BY ViewCount DESC
+
+
+GOT last view count as 127402 so I will use it to start the second set of records from here
+
+SELECT *
+FROM Posts
+WHERE Posts.ViewCount < 127402 AND ViewCount >= 60000
+ORDER BY ViewCount DESC
+
+Got last view count -- 74595
+
+
+SELECT *
+FROM Posts
+WHERE Posts.ViewCount < 74595 AND ViewCount >= 40000
+ORDER BY ViewCount DESC
+Got last VC as 53210
+
+SELECT *
+FROM Posts
+WHERE Posts.ViewCount < 53210 AND ViewCount >= 30000
+ORDER BY ViewCount DESC
+Got last VC as 41323
