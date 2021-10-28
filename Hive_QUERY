@@ -1,0 +1,16 @@
+Creating table :
+create external table poststack3 (Id int, Score int, ViewCount int, Body string, OwnerUserId int, Title string, Tags string) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' TBLPROPERTIES("skip.header.line.count"="1");
+
+Loading the data:
+LOAD DATA LOCAL INPATH ' /home/teena_sharma5/newnew.csv'' OVERWRITE INTO TABLE poststack3;
+
+SET hive.cli.print.header=true;
+
+TASK: Top 10 posts by score :
+SELECT id, title, score FROM poststack3 ORDER BY score DESC LIMIT 10;
+
+Top 10 users by post score :
+SELECT OwnerUserId, SUM(Score) AS TotalScore FROM poststack3 GROUP BY OwnerUserId ORDER BY TotalScore DESC LIMIT 10;
+
+Get the number of distinct users who used the word “cloud” in one of their posts:
+SELECT COUNT(DISTINCT OwnerUserId) FROM poststack3 WHERE (body LIKE '%cloud%' OR title LIKE '%cloud%' OR tags LIKE '%cloud%');
